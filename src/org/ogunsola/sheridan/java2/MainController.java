@@ -32,6 +32,10 @@ public class MainController {
   ) {
     this.questionsDAO = questionsDAO;
     this.questions = questionList;
+  }
+
+  public void initialize() {
+    this.questionListView.setItems(this.questions);
 
     try {
       this.reloadQuestions();
@@ -40,18 +44,20 @@ public class MainController {
     }
   }
 
-  public void initialize() {
-    this.questionListView.setItems(this.questions);
-  }
-
   @FXML
   private void reloadQuestions() throws IOException {
     final URL questionsFileURL = StaticResource.CSV.url(QUESTIONS_CSV);
     this.questions.setAll(this.questionsDAO.load(questionsFileURL));
+    this.questionListView.selectQuestion(0);
   }
 
   @FXML
   private void shuffleQuestions() throws IOException {
     Collections.shuffle(this.questions);
+  }
+
+  @FXML
+  private void nextQuestion() {
+    this.questionListView.selectNextQuestion();
   }
 }

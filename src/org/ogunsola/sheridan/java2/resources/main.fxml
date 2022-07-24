@@ -16,6 +16,7 @@
       </VBox>
       <VBox alignment="TOP_CENTER" spacing="20.0">
          <children>
+            <Button fx:id="nextButton" text="Next" onAction="#nextQuestion" defaultButton="TRUE" />
             <Button fx:id="shuffleButton" text="Shuffle" onAction="#shuffleQuestions" />
             <Button fx:id="reloadButton" text="Reload" onAction="#reloadQuestions" />
          </children>
