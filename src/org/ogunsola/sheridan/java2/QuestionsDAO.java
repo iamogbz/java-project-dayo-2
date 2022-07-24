@@ -13,10 +13,11 @@ public class QuestionsDAO {
   public List<Question> load(final URL fileURL) throws IOException {
     final List<Question> questions = new ArrayList<>();
     final Scanner scanner = new Scanner(fileURL.openStream());
+    int questionNumber = 1;
     while (scanner.hasNext()) {
       final String questionLine = scanner.nextLine();
       String[] question = questionLine.split(QUESTION_FILE_DELIMITER);
-      questions.add(new Question(question[0], question[1]));
+      questions.add(new Question(questionNumber++, question[0], question[1]));
     }
     scanner.close();
     return questions;
@@ -24,17 +25,28 @@ public class QuestionsDAO {
 
   public static class Question {
 
-    public final String questionText;
-    public final String answerText;
+    public final int number;
+    public final String prompt;
+    public final String answer;
 
-    public Question(final String questionText, final String answerText) {
-      this.questionText = questionText;
-      this.answerText = answerText;
+    public Question(
+      final int number,
+      final String prompt,
+      final String answer
+    ) {
+      this.number = number;
+      this.prompt = prompt;
+      this.answer = answer;
     }
 
     @Override
     public String toString() {
-      return this.questionText;
+      return String.format(
+        "%s%s. %s",
+        this.number < 10 ? "0" : "",
+        this.number,
+        this.prompt
+      );
     }
   }
 }

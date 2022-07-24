@@ -18,6 +18,7 @@ public class MainController {
 
   private final ObservableList<Question> questions;
   private final QuestionsDAO questionsDAO;
+  private ChangeListener<Question> questionChangeListener;
   private boolean showAnswer = false;
 
   @FXML
@@ -46,24 +47,24 @@ public class MainController {
   ) {
     this.questionsDAO = questionsDAO;
     this.questions = questionList;
+    this.questionChangeListener =
+      new ChangeListener<Question>() {
+        @Override
+        public void changed(
+          final ObservableValue<? extends Question> observable,
+          final Question oldValue,
+          final Question newValue
+        ) {
+          MainController.this.setShowAnswer(false);
+        }
+      };
   }
 
   public void initialize() {
     this.questionListView.setItems(this.questions);
     this.questionListView.getSelectionModel()
       .selectedItemProperty()
-      .addListener(
-        new ChangeListener<Question>() {
-          @Override
-          public void changed(
-            ObservableValue<? extends Question> observable,
-            Question oldValue,
-            Question newValue
-          ) {
-            MainController.this.hideAnswer();
-          }
-        }
-      );
+      .addListener(this.questionChangeListener);
 
     try {
       this.reloadQuestions();
@@ -76,8 +77,8 @@ public class MainController {
     this.questionListView.getSelectedQuestion()
       .ifPresent(
         question -> {
-          this.questionText.setText(question.questionText);
-          this.answerText.setText(question.answerText);
+          this.questionText.setText(question.prompt);
+          this.answerText.setText(question.answer);
         }
       );
     this.answerText.setVisible(this.showAnswer);
@@ -94,25 +95,18 @@ public class MainController {
     final URL questionsFileURL = StaticResource.CSV.url(QUESTIONS_CSV);
     this.questions.setAll(this.questionsDAO.load(questionsFileURL));
     this.questionListView.selectQuestion(0);
-    this.hideAnswer();
   }
 
   @FXML
   private void shuffleQuestions() throws IOException {
     Collections.shuffle(this.questions);
-    this.hideAnswer();
   }
 
   @FXML
   private void nextQuestion() {
     this.questionListView.selectNextQuestion();
-    this.hideAnswer();
   }
 
-  @FXML
-  private void hideAnswer() {
-    this.setShowAnswer(false);
-  }
 
   @FXML
   private void toggleAnswer() {
