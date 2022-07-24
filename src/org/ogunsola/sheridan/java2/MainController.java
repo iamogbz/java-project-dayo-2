@@ -9,9 +9,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import javafx.scene.text.Text;
-
 import org.ogunsola.sheridan.java2.QuestionsDAO.Question;
 
 public class MainController {
@@ -62,7 +60,7 @@ public class MainController {
             Question oldValue,
             Question newValue
           ) {
-            MainController.this.updateDisplayState();
+            MainController.this.hideAnswer();
           }
         }
       );
@@ -74,15 +72,21 @@ public class MainController {
     }
   }
 
-  private Question getSelectedQuestion() {
-    return this.questions.get(this.questionListView.getSelectedQuestionIndex());
-  }
-
   private void updateDisplayState() {
-    this.questionText.setText(this.getSelectedQuestion().questionText);
-    this.answerText.setText(this.getSelectedQuestion().answerText);
+    this.questionListView.getSelectedQuestion()
+      .ifPresent(
+        question -> {
+          this.questionText.setText(question.questionText);
+          this.answerText.setText(question.answerText);
+        }
+      );
     this.answerText.setVisible(this.showAnswer);
     this.answerToggle.setText((this.showAnswer ? "Hide" : "Show") + " Answer");
+  }
+
+  private void setShowAnswer(final boolean showAnswer) {
+    this.showAnswer = showAnswer;
+    this.updateDisplayState();
   }
 
   @FXML
@@ -90,25 +94,28 @@ public class MainController {
     final URL questionsFileURL = StaticResource.CSV.url(QUESTIONS_CSV);
     this.questions.setAll(this.questionsDAO.load(questionsFileURL));
     this.questionListView.selectQuestion(0);
-    this.updateDisplayState();
+    this.hideAnswer();
   }
 
   @FXML
   private void shuffleQuestions() throws IOException {
     Collections.shuffle(this.questions);
-    this.updateDisplayState();
+    this.hideAnswer();
   }
 
   @FXML
   private void nextQuestion() {
     this.questionListView.selectNextQuestion();
-    this.showAnswer = false;
-    this.updateDisplayState();
+    this.hideAnswer();
+  }
+
+  @FXML
+  private void hideAnswer() {
+    this.setShowAnswer(false);
   }
 
   @FXML
   private void toggleAnswer() {
-    this.showAnswer = !this.showAnswer;
-    this.updateDisplayState();
+    this.setShowAnswer(!this.showAnswer);
   }
 }
