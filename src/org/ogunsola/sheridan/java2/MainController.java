@@ -8,7 +8,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
 import javafx.scene.text.Text;
 import org.ogunsola.sheridan.java2.QuestionsDAO.Question;
 
@@ -19,7 +18,6 @@ public class MainController {
   private final ObservableList<Question> questions;
   private final QuestionsDAO questionsDAO;
   private ChangeListener<Question> questionChangeListener;
-  private boolean showAnswer = false;
 
   @FXML
   private QuestionListView questionListView;
@@ -31,7 +29,7 @@ public class MainController {
   private Text answerText;
 
   @FXML
-  private Button answerToggle;
+  private AnswerSwitch answerSwitch;
 
   public MainController() {
     this(new QuestionsDAO());
@@ -55,7 +53,7 @@ public class MainController {
           final Question oldValue,
           final Question newValue
         ) {
-          MainController.this.setShowAnswer(false);
+          MainController.this.answerSwitch.setOn(false);
         }
       };
   }
@@ -73,6 +71,7 @@ public class MainController {
     }
   }
 
+  @FXML
   private void updateDisplayState() {
     this.questionListView.getSelectedQuestion()
       .ifPresent(
@@ -81,13 +80,7 @@ public class MainController {
           this.answerText.setText(question.answer);
         }
       );
-    this.answerText.setVisible(this.showAnswer);
-    this.answerToggle.setText((this.showAnswer ? "Hide" : "Show") + " Answer");
-  }
-
-  private void setShowAnswer(final boolean showAnswer) {
-    this.showAnswer = showAnswer;
-    this.updateDisplayState();
+    this.answerText.setVisible(this.answerSwitch.isOn());
   }
 
   @FXML
@@ -105,11 +98,5 @@ public class MainController {
   @FXML
   private void nextQuestion() {
     this.questionListView.selectNextQuestion();
-  }
-
-
-  @FXML
-  private void toggleAnswer() {
-    this.setShowAnswer(!this.showAnswer);
   }
 }
