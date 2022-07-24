@@ -1,6 +1,18 @@
-## Getting Started
+# Getting Started
 
-Welcome to the VS Code Java world. Here is a guideline to help you get started to write Java code in Visual Studio Code.
+Welcome to FlashCards. Here is a guideline to help you get started with the project in Visual Studio Code.
+
+## Launch App
+
+In the terminal from the project root folder execute:
+
+```sh
+. script/run
+```
+
+This will launch the app and keep it running until interrupted e.g. `Ctrl+C`, or the exit button is clicked.
+
+![App Demo](assets/demo.png)
 
 ## Folder Structure
 

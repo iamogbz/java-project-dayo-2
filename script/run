@@ -1,0 +1,5 @@
+#!/usr/bin/env sh
+
+# Rebuild and launch App
+. script/recompile
+java -cp $BIN_PATH App

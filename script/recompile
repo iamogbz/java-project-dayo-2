@@ -1,0 +1,18 @@
+#!/usr/bin/env sh
+
+BIN_PATH='bin'
+SRC_PATH='src'
+
+# Clean build path
+rm -rf $BIN_PATH
+# Ensure build path exists
+mkdir $BIN_PATH
+# Copy resources
+cp -a --parents **/resources/**/* $SRC_PATH $BIN_PATH
+# Place copied resources in correct build path
+TMP_PATH="$BIN_PATH.tmp"
+mv $BIN_PATH $TMP_PATH
+mv $TMP_PATH/$SRC_PATH $BIN_PATH
+rm -rf $TMP_PATH
+# Build class files
+javac -sourcepath $SRC_PATH -d $BIN_PATH $SRC_PATH/**/*.java
